@@ -108,6 +108,7 @@
         <maven-release-plugin-version>2.5.3</maven-release-plugin-version>
         <maven-archetype-plugin-version>2.4</maven-archetype-plugin-version>
         <maven-java-formatter-plugin-version>0.4</maven-java-formatter-plugin-version>
+        <maven-gpg-plugin-version>1.6</maven-gpg-plugin-version>
 
         <!-- for camel-ospl -->
         <opensplice-dds-version>6.7.0</opensplice-dds-version>
@@ -450,6 +451,22 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <preparationGoals>clean install</preparationGoals>
                 </configuration>
+            </plugin>
+
+            <!-- PGP signature -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
