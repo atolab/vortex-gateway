@@ -25,78 +25,82 @@ import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 
 /**
  * Opensplice IDL Compiler.
- * 
- * @goal idl-compile
- * @phase generate-sources
- * @requiresDependencyResolution test
  */
+@Mojo(name = "idl-compile",
+      defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+      requiresDependencyResolution = ResolutionScope.TEST)
 public class IDLMojo
    extends AbstractMojo
 {
 
    /**
     * The Maven project
-    * 
-    * @parameter expression="${project}"
-    * @required
-    * @readonly
+    * @ parameter expression="${project}"
+    * @ required
+    * @ readonly
     */
+   @Parameter(defaultValue = "${project}", required = true, readonly = true)
    private MavenProject project;
 
    /**
     * Location of the outputDirectory.
-    * 
-    * @parameter expression="${opensplice.idlc.outDir}"
-    *            default-value="${project.build.directory}/generated-sources/idl"
+    * @ parameter expression="${opensplice.idlc.outDir}"
+    * default-value="${project.build.directory}/generated-sources/idl"
     */
+   @Parameter(property = "opensplice.idlc.outDir",
+              defaultValue = "${project.build.directory}/generated-sources/id")
    private File outDir;
 
    /**
     * include directories
-    * 
-    * @parameter
+    * @ parameter
     */
+   @Parameter
    private File[] includeDirs;
 
    /**
     * IDL Directory
-    * 
-    * @parameter expression="${opensplice.idlc.idlDir}"
-    *            default-value="${basedir}/src/main/idl"
+    * @ parameter expression="${opensplice.idlc.idlDir}"
+    * default-value="${basedir}/src/main/idl"
     */
+   @Parameter(property = "opensplice.idlc.idlDir", defaultValue = "${basedir}/src/main/idl")
    private File idlDir;
 
    /**
     * macro definitions
-    * 
-    * @parameter
+    * @ parameter
     */
+   @Parameter
    private String[] macros;
 
    /**
     * Compiler Executable
-    * 
-    * @parameter expression="${opensplice.idlc}" default-value="idlpp"
+    * @ parameter expression="${opensplice.idlc}" default-value="idlpp"
     */
+   @Parameter(property = "opensplice.idlc", defaultValue = "idlpp")
    private String idlc;
 
    /**
     * language can be java, c++ or c
-    * 
-    * @parameter expression="${opensplice.idlc.lang}" default-value="java"
+    * @ parameter expression="${opensplice.idlc.lang}" default-value="java"
     */
+   @Parameter(property = "opensplice.idlc.lang", defaultValue = "java")
    private String language;
 
    /**
     * mode can be stand-alone or corba (-S | -C)
-    * 
-    * @parameter expression="${opensplice.idlc.mode}" default-value="-S"
+    * @ parameter expression="${opensplice.idlc.mode}" default-value="-S"
     */
+   @Parameter(property = "opensplice.idlc.mode", defaultValue = "-S")
    private String mode;
 
    /**
@@ -107,7 +111,7 @@ public class IDLMojo
    /**
     * Creates the IDL compiler command and processes every IDL
     * 
-    * @throws MojoExecutionException
+    * @throws MojoExecutionException in case of error
     */
    public void execute() throws MojoExecutionException
    {
@@ -201,9 +205,7 @@ public class IDLMojo
 
    /**
     * @return Absolute Path to the IDL Compiler
-    * @param executable
-    *           the idl executable
-    * @throws MojoExecutionException
+    * @throws MojoExecutionException if the OSPL_HOME environment variable is not set
     */
    protected String getCompiler() throws MojoExecutionException
    {

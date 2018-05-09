@@ -1653,13 +1653,15 @@ public class DdsEndpoint
 
 
    /**
-    * Create an exchange with sample and its SampleInfo and call the processor to forward the
+    * Create an {@link Exchange} with sample and its SampleInfo and call the processor to forward
+    * the
     * message.
     * 
     * @param sample
     *           the DDS sample
     * @param info
     *           the associated SampleInfo
+    * @return an {@link Exchange} containing the sample and the SampleInfo.
     */
    public Exchange createExchange(Object sample, SampleInfo info)
    {

@@ -45,7 +45,7 @@ public class IDLProcessor
     * 
     * @param arguments
     *           command line to be passed to the process builder
-    * @throws MojoExecutionException
+    * @throws MojoExecutionException in case of error
     */
    protected void process(List<String> arguments)
       throws MojoExecutionException

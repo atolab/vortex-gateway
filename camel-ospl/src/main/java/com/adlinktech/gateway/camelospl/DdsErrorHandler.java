@@ -68,6 +68,9 @@ public final class DdsErrorHandler
 
    /**
     * Returns the name of an error code.
+    * 
+    * @param status the error code
+    * @return the name of the error code
     */
    public static String getErrorName(int status)
    {
@@ -76,6 +79,10 @@ public final class DdsErrorHandler
 
    /**
     * Check the return status for errors. If there is an error, then terminate.
+    * 
+    * @param status the error code
+    * @param info a message that will be set in the DdsException in case of error.
+    * @exception DdsException if the status corresponds to an error
     */
    public static synchronized void checkStatus(int status, String info) throws DdsException
    {
@@ -88,6 +95,10 @@ public final class DdsErrorHandler
 
    /**
     * Check whether a valid handle has been returned. If not, then terminate.
+    * 
+    * @param handle a handle returned by a DDS operation
+    * @param info a message that will be set in the DdsException in case of error.
+    * @exception DdsException if the handle corresponds to an error
     */
    public static synchronized void checkHandle(Object handle, String info)
       throws DdsException

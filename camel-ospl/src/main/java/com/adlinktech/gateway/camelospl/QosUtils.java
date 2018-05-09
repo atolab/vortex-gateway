@@ -363,7 +363,7 @@ public final class QosUtils
    /**
     * Update a DataReaderQos set with new QoS.
     * 
-    * @param dataReaderQosHolder the DataReaderQosHolder.
+    * @param readerQosHolder the DataReaderQosHolder.
     * @param newQos the new QoS to be set.
     */
    public static void updateQos(DataReaderQosHolder readerQosHolder,
@@ -382,7 +382,7 @@ public final class QosUtils
    /**
     * Update a DataWriterQos set with new QoS.
     * 
-    * @param dataWriterQosHolder the DataWriterQosHolder.
+    * @param writerQosHolder the DataWriterQosHolder.
     * @param newQos the new QoS to be set.
     */
    public static void updateQos(DataWriterQosHolder writerQosHolder,

@@ -394,8 +394,13 @@ public class DdsProducer
    /**
     * Do a DDS publication of specified data.
     * The DataWriter operation which is called depends from
-    * the DdsDisposeHeader value: <li>if null : write()</li> <li>if WRITEDISPOSE : writedispose()</li>
-    * <li>if DISPOSE : dispose()</li> <li>if UNREGISTER : unregister_instance()</li>
+    * the DdsDisposeHeader value:
+    * <ul>
+    * <li>if null : write()
+    * <li>if WRITEDISPOSE : writedispose()
+    * <li>if DISPOSE : dispose()
+    * <li>if UNREGISTER : unregister_instance()
+    * </ul>
     * 
     * @param data the DDS data to be published
     * @param dispose a DdsDisposeHeader enum

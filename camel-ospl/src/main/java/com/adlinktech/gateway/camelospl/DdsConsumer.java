@@ -635,7 +635,7 @@ public class DdsConsumer
     * Dynamically change the LatencyDuration QoS of the {@link DataReader} associated with this
     * DdsConsumer.
     * 
-    * @param period the new duration (in seconds)
+    * @param duration the new duration (in seconds)
     * @throws DdsException if an error occurs setting the new LatencyDuration
     */
    public void changeLatencyDuration(double duration)
@@ -662,7 +662,7 @@ public class DdsConsumer
     * Dynamically change the TimebasedFilter QoS of the {@link DataReader} associated with this
     * DdsConsumer.
     * 
-    * @param period the new TimebasedFilter minimum_separation (in seconds)
+    * @param timebasedFilter the new TimebasedFilter minimum_separation (in seconds)
     * @throws DdsException if an error occurs setting the new TimebasedFilter
     */
    public void changeTimebasedFilter(double timebasedFilter)
@@ -689,7 +689,7 @@ public class DdsConsumer
     * Dynamically change the Partition QoS of the {@link Subscriber} associated with this
     * DdsConsumer.
     * 
-    * @param period the new Partition expression (using ',' as delimiter)
+    * @param partitionStr the new Partition expression (using ',' as delimiter)
     * @throws DdsException if an error occurs setting the new Partition
     */
    public void changePartition(String partitionStr)
