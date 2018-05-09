@@ -1,0 +1,673 @@
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+# camel-ospl User Guide
+
+## The camel-ospl Endpoint configuration
+
+An Apache Camel endpoint using Vortex OpenSplice is configured using
+following URI format:
+
+    dds:topicName:domainID/[topicClass][?options]
+
+
+Where _topicName_ is the DDS topic name to publish or subscribe,
+_domainID_ is the DDS domain identifier, and _topicClass_ is the
+generated class for the topic type (optional in the case of Camel
+Messages mode; see <<msg-mode,Camel Messages mode>>).
+
+_Options_ is a list of optional parameters, separated by '_&_'
+characters; for example:
+
+    ?option1=value1&option2=value2&...
+
+
+The following options are accepted:
+
+[options="header",cols="15,15,70"]
+|===================================================================================================
+| Name                                      | Type     | Description
+
+| readMode                                  | Boolean  a|
+Only applies to a consumer endpoint _(from("dds:...'))_.
+
+By default the DDS DataReader of a consumer endpoint uses the `take()`
+operation. Setting this option to true makes it to use the `read()`operation instead.
+
+The advantage is that  in case of a DISPOSE or WRITEDISPOSE message the data
+will be valid ( _i.e._ the latest-read data). The drawback is that the
+DataReader consumes more memory to keepthe latest data in a cache.
+
+| ignoreLocalPublishers                     | Boolean  a|
+Only applies to a consumer endpoint _(from("dds:...'))_.
+
+Indicate if a consumer must ignore the data published by a local producer (i.e. in the same JVM).
+
+By default this option is set to true, avoiding loop for bridge patterns using
+2 routes in opposite directions. For instance with a DDS/JMS bridge, you configure 2 routes:
+
+ - a route from JMS to DDS
+ - a route from DDS to JMS
+
+If this option is set to false, the 2nd route will receive the publications from
+the 1st route, sending back to JMS data which are coming from JMS.
+
+| partition                                 | String   a|
+Corresponds to DDS `PartitionQosPolicy.name`.
+
+A list of DDS partitions, separated by `,` characters.
+
+| contentFilter                             | String   a|
+Corresponds to a DDS filter expression to be used on topic (actually a
+ContentFilteredTopic is created by the endpoint).
+This is a SQL-like expression as defined in the DDS specification.
+
+_WARNING_ : the expression must use percent-encoding for URI reserved and
+unsafe characters (_e.g._  `=` = `%3D` , `>` = `%3E`, ..)
+
+| deadlinePeriod                            | Double   a|
+Corresponds to DDS `DeadlineQosPolicy.period`.
+
+A float representing a time in seconds.
+
+| destinationOrder                          | String   a|
+Corresponds to DDS `DestinationOrderQosPolicy.kind`.
+
+Possible values:
+
+ - _BY_RECEPTION_TIMESTAMP_
+ - _BY_SOURCE_TIMESTAMP_
+
+| durabilityKind                            | String   a|
+Corresponds to DDS `DurabilityQosPolicy.kind`.
+
+Possible values:
+
+ - _VOLATILE_
+ - _TRANSIENT_
+ - _TRANSIENT_LOCAL_
+ - _PERSISTENT_
+
+| durabilityServiceCleanupDelay             | Double   a|
+Corresponds to DDS `DurabilityServiceQosPolicy.service_cleanup_delay`
+
+A float representing a time in seconds.
+
+| durabilityServiceDepth                    | Int      a|
+Corresponds to DDS `DurabilityServiceQosPolicy.history_depth`
+
+An integer representing the history depth.
+
+| durabilityServiceKind                     | String   a|
+Corresponds to DDS `DurabilityServiceQosPolicy.history_kind`
+
+Possible values:
+
+ - _KEEP_ALL_
+ - _KEEP_LAST_
+
+| durabilityServiceMaxInstances             | Int      a|
+Corresponds to DDS `DurabilityServiceQosPolicy.max_instances`
+
+An integer representing the maximum number of instances.
+
+| durabilityServiceMaxSamples               | Int      a|
+Corresponds to DDS `DurabilityServiceQosPolicy.max_samples`
+
+An integer representing the maximum number of samples.
+
+| durabilityServiceMaxSamplesPerInstance    | Int      a|
+Corresponds to DDS `DurabilityServiceQosPolicy.max_samples_per_instance`
+
+An integer representing the history depth.
+
+| historyDepth                              | String   a|
+Corresponds to DDS `HistoryQosPolicy.depth`.
+
+An integer representing the maximum number of samples per instance.
+
+| historyKind                               | String   a|
+Corresponds to DDS `HistoryQosPolicy.kind`.
+
+Possible values:
+
+ - _KEEP_ALL_
+ - _KEEP_LAST_
+
+| latencyDuration                           | Double   a|
+Corresponds to DDS `LatencyBudgetQosPolicy.duration`.
+
+A float representing a time in seconds.
+
+| lifespanDuration                          | Double   a|
+Corresponds to DDS `LifespanQosPolicy.duration`.
+
+A float representing a time in seconds.
+
+| livelinessDuration                        | Double   a|
+Corresponds to DDS `LivelinessQosPolicy.lease_duration`.
+
+A float representing a time in seconds.
+
+| livelinessKind                            | String   a|
+Corresponds to DDS `LivelinessQosPolicy.kind`.
+
+Possible values:
+
+ - _AUTOMATIC_
+ - _MANUAL_BY_PARTICIPANT_
+ - _MANUAL_BY_TOPIC_
+
+| ownershipKind                             | String   a|
+Corresponds to DDS `OwnershipQosPolicy.kind`.
+
+Possible values:
+
+ - _SHARED_
+ - _EXCLUSIVE_
+
+| ownershipStrength                         | String   a|
+Corresponds to DDS `OwnershipStrengthQosPolicy.value`.
+
+An integer representing the ownership strength.
+
+| presentationAccessScope                   | String   a|
+Corresponds to DDS `PresentationQosPolicy.access_scope`.
+
+Possible values:
+
+ - _INSTANCE_
+ - _TOPIC_
+ - _GROUP_
+
+| presentationCoherentAccess                | Boolean  a|
+Corresponds to DDS `PresentationQosPolicy.coherent_access`
+
+| presentationOrderedAccess                 | Boolean  a|
+Corresponds to DDS `PresentationQosPolicy.ordered_access`
+
+| readerDataLifecycleAutopurgeDisposedDelay | Double   a|
+Corresponds to DDS `ReaderDataLifecycleQosPolicy.autopurge_disposed_samples_delay`
+
+A float representing a time in seconds.
+
+| readerDataLifecycleAutopurgeNowriterDelay | Double   a|
+Corresponds to DDS `ReaderDataLifecycleQosPolicy.autopurge_nowriter_samples_delay`
+
+A float representing a time in seconds.
+
+| reliabilityBlockingTime                   | Double   a|
+Corresponds to DDS `ReliabilityQosPolicy.max_blocking_time`
+
+A float representing a time in seconds.
+
+| reliabilityKind                           | String   a|
+Corresponds to DDS `ReliabilityQosPolicy.kind`.
+
+Possible values:
+
+ - _RELIABLE_
+ - _BEST_EFFORT_
+
+| resourceLimitsMaxInstances                | Int      a|
+Corresponds to DDS `ResourceLimitsQosPolicy.max_instances`
+
+An integer representing the maximum number of instances.
+
+| resourceLimitsMaxSamples                  | Int      a|
+Corresponds to DDS `ResourceLimitsQosPolicy.max_samples`.
+
+An integer representing the maximum number of samples.
+
+| resourceLimitsMaxSamplesPerInstance       | Int      a|
+Corresponds to DDS `ResourceLimitsQosPolicy.max_samples_per_instance`
+
+An integer representing the maximum number of samples per instance.
+
+| timebasedFilter                           | Double   a|
+Corresponds to DDS `TimeBasedFilterQosPolicy.minimum_separation`
+
+A float representing a time in seconds.
+
+| transportPriority                         | Int      a|
+Corresponds to DDS `TransportPriorityQosPolicy.value`.
+
+An integer representing the transport priority.
+
+| writerDataLifecycleAutodispose            | Boolean  a|
+Corresponds to DDS WriterDataLifecycleQosPolicy.autodispose_unregistered_instances
+
+|===================================================================================================
+
+
+## Content of Camel Exchanges
+
+Each Camel Exchange produced by the DDS endpoint contains the data as
+body of the IN message. The data has for its type the Java class
+representing the Topic Type.
+
+Note that this data might be 'invalid' ( _i.e._ with some members not
+set, or with dummy values), if the instance state changes. See the
+Vortex OpenSplice reference guide for more details (ReaderDataLifecycleQos
+chapter). This can be checked with the `SampleInfo.valid_data` boolean
+(see below).
+
+The IN message contains the following information as headers:
+
+[options="header",cols="20,30,50"]
+|===================================================================================================
+| Name            | Type                                              | Description
+
+| DDS_SAMPLE_INFO | DDS.SampleInfo                                    a|
+The *SampleInfo* object read by the DDS Reader with the data.
+
+| DDS_DISPOSE     | com.adlinktech.gateway.camelospl.DdsDisposeHeader a|
+This header is present only if the instance was disposed. In such a case it's set either to
+_DISPOSE_ if the body of the message contains invalid data, or to _WRITEDISPOSE_ if the
+body of the message contains the last valid data sent by the publisher before the disposal.
+|===================================================================================================
+
+
+## Example of route
+
+Below is an example of a simple Camel route definition from a DDS
+endpoint to a Processor displaying the data:
+
+[source,java]
+----
+final String fromURI =
+   "dds:ChatMessage:0/Chat.ChatMessage?ReliabilityKind=RELIABLE&Partition=ChatRoom";
+final CamelContext ctx = new DefaultCamelContext();
+ctx.addRoutes(new RouteBuilder() {
+  public void configure() {
+    // from DDS endpoint to a Processor displaying the received message.
+    from(fromURI).process(new Processor() {
+       public void process(Exchange e) {
+          Chat.ChatMessage msg = (Chat.ChatMessage) e.getIn().getBody();
+          String content = msg.content;
+          System.out.println(content);
+       }
+    });
+  }
+});
+
+ctx.start();
+----
+
+In this example the DDS endpoint subscribes to the '_ChatMessage_' topic
+in DDS Domain '_0_' using DDS partition '_ChatRoom_'.
+The topic Reliability QoS is set to '_RELIABLE_'.
+
+## Dynamic DDS QoS changes
+
+The camel-ospl component offers the possibility to change at runtime
+some of the DDS QoS which are used by the Vortex OpenSplice entities
+(Publisher, Subscriber, DataWriter or DataReader).
+
+
+### Publisher / DataWriter changeable QoS
+
+The Publisher and DataWriter DDS entities are managed by a
+_com.adlinktech.gateway.camelospl.DdsProducer_ class which implements the
+_org.apache.camel.Producer_ interface.
+
+The following operations can be used at runtime to change some of the
+DDS QoS used for subsequent Camel exchanges:
+
+* `public void changeDeadlinePeriod(double period) throws DdsException;`
+* `public void changeLatencyDuration(double duration) throws DdsException;`
+* `public void changeOwnershipStrength(int strength) throws DdsException;`
+* `public void changeTransportPriority(int priority) throws DdsException;`
+* `public void changeLifespanDuration(double duration) throws DdsException;`
+* `public void changePartition(String partitionStr) throws DdsException;`
+
+Example of usage:
+
+[source,java]
+----
+final String toURI =
+   "dds:ChatMessage:0/Chat.ChatMessage?Partition=ChatRoom-1";
+final CamelContext ctx = new DefaultCamelContext();
+final DdsProducer toProducer =
+(DdsProducer) ctx.getEndpoint(toURI).createProducer();
+ctx.addRoutes(new RouteBuilder() {
+   public void configure() {
+      from("...") // from any endpoint
+      .process(toProducer); // equivalent to: .to(toUri);
+   }
+});
+
+// ... later, change the partition used by the DdsProducer's entities
+toProducer.changePartition("ChatRoom-2");
+----
+
+### Subscriber / DataReader changeable QoS
+
+The Subscriber and DataReader DDS entities are managed by the class
+_com.adlinktech.gateway.camelospl.DdsConsumer_ which implements the
+_org.apache.camel.Consumer_ interface.
+
+The following operations can be used at runtime to change some of the
+DDS QoS used for subsequent Camel exchanges:
+
+* `public void changeDeadlinePeriod(double period) throws DdsException;`
+* `public void changeLatencyDuration(double duration) throws DdsException;`
+* `public void changeTimebasedFilter(double timebasedFilter) throws DdsException;`
+* `public void changePartition(String partitionStr) throws DdsException;`
+
+Example of usage:
+
+[source,java]
+----
+final String toURI =
+   "dds:ChatMessage:0/Chat.ChatMessage?Partition=ChatRoom-1";
+final CamelContext ctx = new DefaultCamelContext();
+ctx.addRoutes(new RouteBuilder() {
+   public void configure() {
+      from(fromURI)
+      .routeId("ChatRoute") //give an ID to the Route for later retrieval
+      .process(new Processor() {
+         public void process(Exchange e) {
+            Chat.ChatMessage msg = (Chat.ChatMessage)e.getIn().getBody();
+            String content = msg.content;
+            System.out.println(content);
+         }
+      });
+   }
+});
+
+// ... later, change the partition for the DdsConsumer's entities
+DdsConsumer ddsConsumer =
+   (DdsConsumer) ctx.getRoute("ChatRoute").getConsumer();
+ddsConsumer.changePartition("ChatRoom-2");
+----
+
+### Per-message changes
+
+It is also possible to change some of the Producer QoS on-the-fly for a
+single message. To do this, add the following headers to the Camel
+message sent to a DDS Producer:
+
+[options="header",cols="30,70"]
+|===================================================================================================
+| Header name               | Header value
+
+| `dds.ownershipStrength`  | An integer representing the _ownershipStrength_ value
+                             to be used for this message.
+
+| `dds.transportPriority`  | An integer representing the _transportPriority_ value
+                             to be used for this message.
+
+| `dds.lifespanDuration`   | A float representing the _lifespanDuration_ value
+                             (in seconds) to be used for this message.
+|===================================================================================================
+
+Example of usage:
+
+[source,java]
+----
+// A route publishing Alarms to DDS and changing the
+// transportPriority QoS depending the alarm level
+from("...")
+.choice()
+   .when().groovy("request.body.alarmLevel == 'LOW'")
+      .setHeader("dds.transportPriority", constant(1))
+   .when().groovy("request.body.alarmLevel == 'HIGH'")
+      .setHeader("dds.transportPriority", constant(3))
+.endChoice()
+.to("dds:Alarms:0/com.adlinktech.demo.AlarmType");
+----
+
+[[msg-mode]]
+## Camel Messages mode
+
+This mode allows Camel Messages to be exchanged _via_ DDS. This includes
+the Message's headers, attachments and body, providing they contain only
+Serializable Java objects.
+
+This mode is activated when you don't specify a _topicClass_ in the
+endpoint URI.
+
+Below is an example of Camel Messages mode usage, with a Java String as
+the message body:
+
+[source,java]
+----
+final String fromURI = "dds:ExampleStrTopic:0/?target=stringTarget";
+final CamelContext ctx = new DefaultCamelContext();
+Endpoint endpoint = ctx.getEndpoint(fromURI);
+// Define the route from DDS endpoint to a Processor
+// displaying the received data.
+ctx.addRoutes(new RouteBuilder() {
+   public void configure() {
+      from(fromURI)
+      .process(new Processor() {
+         public void process(Exchange e) {
+            System.out.println((String)e.getIn().getBody());
+         }
+      });
+   }
+});
+
+// create a ProducerTemplate
+ProducerTemplate template = ctx.createProducerTemplate();
+
+// use ProducerTemplate to send Exchange to DDS endpoint
+template.send(endpoint, new Processor() {
+   public void process(Exchange exchange) {
+      exchange.getIn().setBody("Hello World!");
+   }
+});
+----
+
+The '_target_' option used in the URI is specific to the Camel
+Messages mode. This extra value is sent through DDS with the Camel
+message and allows consuming routes to filter messages according to this
+'_target_' value.
+
+
+## DDS Polling Consumer
+
+The Vortex OpenSplice endpoint provides a DDSPollingConsumer implementation
+allowing it to wait for incoming DDS data. Hence the caller can poll for
+messages when it is ready.
+
+The DDSPollingConsumer implements the three polling methods of the Camel
+PollingConsumer interface in addition to three other polling methods
+that allow the caller to specify some DDS specific options in order to
+select the set of data to be read.
+
+[options="header",cols="50,50"]
+|===================================================================================================
+| Method Name                                          | Description
+
+| `receive()`                                          | Waits until a message is available
+
+| `receive(Map<String, Object> options)`               | blocking forever.
+
+| `receive(long timeout)`                              | Waits up to the given timeout and
+
+| `receive(Map<String, Object> options, long timeout)` | within the given timeout.
+
+| `receiveNoWait()`                                    | Reads a message immediately without
+
+| `receiveNoWait(Map<String, Object> options)`         | is received.
+|===================================================================================================
+
+
+The '_options_' parameter can express the states of the DDS messages
+to be read as well as a condition that allows it to read the messages
+with content-based filtering. The options map keys correspond to the
+headers names described in the table in <<DynamicPollEnricher>>.
+
+Note that the DDSPollingConsumer performs a DDS `read()` operation and not
+a `take()` operation. It means that the data is kept in the DDS middleware
+and can be read again if necessary.
+
+Below is an example of how to use the DDS PollingConsumer.
+
+[source,java]
+----
+   // Getting the DDS topicA endpoint
+   Endpoint ddsEndpointA = camelContext.getEndpoint("dds:topicA:0/TypeA");
+
+   // Create PollingConsumer to poll data from topicA
+   DynamicPollingConsumer pollConsumer =
+      (DynamicPollingConsumer) ddsEndpointA.createPollingConsumer();
+
+   // Setting the polling options : only not read and alive samples
+
+   Map<String, Object> conditions = new HashMap<String, Object>();
+   conditions.put("DDS_SAMPLE_STATE", NOT_READ_SAMPLE_STATE.value);
+   conditions.put("DDS_INSTANCE_STATE", ALIVE_INSTANCE_STATE.value);
+
+   long wait_timeout = 3000; // milliseconds
+
+   // Polling for topicA messages with the given options
+   Exchange e = pollConsumer.receive(conditions, wait_timeout);
+   if (e != null) {
+      // to process the message
+   } else {
+      // TIMEOUT
+   }
+----
+
+## Additional Apache Camel Processors
+
+[[DynamicPollEnricher]]
+### DynamicPollEnricher
+
+Apache Camel already provides a _pollEnrich_ pattern (see
+http://camel.apache.org/content-enricher.html) allowing in a Camel
+route to enrich an incoming message with data from a PollingConsumer.
+
+For Camel versions 2.15 and older, the _pollEnrich_
+pattern is not able to extract data from current exchange to
+influence the polling ( _e.g._ to poll data with the same key as in the
+received message). See the note in http://camel.apache.org/content-enricher.html.
+
+From Camel 2.16 onwards both enrich and _pollEnrich_ supports dynamic endpoints
+that uses an Expression to compute the uri, which allows to use data from the
+current Exchange. See more details at Message Endpoint http://camel.apache.org/message-endpoint.html.
+However, the usage of dynamic endpoints is not appropriate in our case, because
+it would force the creation of a DataWriter for each polling query.
+
+The Camel DDS component have therefore introduced a new class
+_com.adlinktech.gateway.camelext.DynamicPollEnricher_ which can be use
+as a Camel Processor. This Processor implements a missing feature in
+_pollEnricher_, passing incoming messages' headers to a specific
+implementation of _PollingConsumer_ for DDS endpoint creating a
+_DDSQueryCondition_ according to the headers' options and calling
+_DataReader.read_w_condition()_ .
+
+Note that the _DynamicPollEnricher_ uses a non blocking operation of the
+_PollingConsumer_ to receive the messages. If no message is available yet,
+it returns immediately with a null exchange.
+
+By default the _DynamicPollEnricher_ class uses the reply from
+_PollingConsumer_ as outgoing message. But another _AggregationStrategy_
+can be set to merge the reply with original incoming message. Use the
+operation _PollingConsumer.setAggregationStrategy()_ to set another
+strategy.
+
+The accepted header options are:
+
+[options="header",cols="50,50"]
+|===================================================================================================
+| Name                 | Type     | Description
+
+| DDS_SAMPLE_STATE     | int      a|
+A mask of matching SampleStates.
+
+Default value is _DDS.ANY_SAMPLE_STATE.value_
+
+| DDS_VIEW_STATE       | int      a|
+A mask of matching ViewStates.
+
+Default value is _DDS.ANY_VIEW_STATE.value_
+
+| DDS_INSTANCE_STATE   | int      a|
+A mask of matching InstanceStates.
+
+Default value is _DDS.ANY_INSTANCE_STATE_value_
+
+| DDS_QUERY_EXPRESSION | String   a|
+A query expression.
+
+Default value is _null_ (meaning a _ReadCondition_ is used instead of a _QueryCondition_ ).
+
+| DDS_QUERY_PARAMETERS | String[] a|
+An array of query parameters.
+
+Default value is an empty array.
+|===================================================================================================
+
+
+Below is an example of the *DynamicPollEnricher* class:
+
+[source,java]
+----
+// Some DDS endpoints. Messages come from topicA and have to be enriched
+// by matching data from topicB.
+Endpoint ddsEndpointA = camelContext.getEndpoint("dds:topicA:0/TypeA");
+Endpoint ddsEndpointB = camelContext.getEndpoint("dds:topicB:0/TypeB");
+
+// Create a DynamicPollEnricher polling from topicB
+DynamicPollEnricher pollEnricher = new
+   DynamicPollEnricher("dds:topicB:0/TypeB");
+
+// Set custom strategy, creating a TypeC from a TypeA + TypeB
+pollEnricher.setAggregationStrategy(new AggregationStrategy() {
+   @Override
+   public Exchange aggregate(Exchange oldExchange, Exchange newExchange)
+   {
+      // get TypeA and TypeB
+      TypeA a = (TypeA) oldExchange.getIn().getBody();
+      TypeB b = (TypeB) newExchange.getIn().getBody();
+      // create TypeC
+      TypeC c = new TypeC(a,b);
+      // replace oldExchange's body with TypeC and return it
+      oldExchange.getIn().setBody(c);
+      return oldExchange;
+   }
+});
+
+// Route from TopicA topic to the PollEnricher getting a TopicB sample
+// with TopicA.index = TopicB.index and aggregating both as a NamedMessage.
+from(ddsEndpointA)
+// Query expression to get TopicB with index = first param
+.setHeader("DDS\_QUERY\_EXPRESSION", constant("index=%0"))
+// Query param: use Groovy to get TopicA.index and create String array
+.setHeader("DDS\_QUERY\_PARAMETERS")
+.groovy("[request.body.index.toString()]")
+// send message with headers to pollEnricher
+.process(pollEnricher)
+// now display resulting message (TypeC is expected)
+.process(new Processor() {
+   public void process(Exchange e) {
+      System.out.println((TypeC)e.getIn().getBody());
+   }
+});
+----
+
+For another example of _DynamicPollEnricher_ usage, look at Vortex
+Gateway's _examples/camel-example-dds_ code. It contains an example of a route
+from a _Circle_ topic, polling correlated data from a _Square_ topic
+of the same color and computes the average position between _Circle_ and
+_Square_ and publishes a _Triangle_ topic in that position.

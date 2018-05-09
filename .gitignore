@@ -1,0 +1,32 @@
+# Gateway generated files
+target
+
+
+# Eclipse files
+.project
+.settings
+.classpath
+.scala_dependencies
+.cache
+.pydevproject
+
+# IntelliJ IDEA files
+.idea
+*.ipr
+*.iws
+*.iml
+
+# log files
+*.log
+*.licensed
+
+# edtion files
+*~
+*.bak
+*.BAK
+.~lock*
+*.swp
+
+# files produced by Maven release plugin
+pom.xml.*
+release.properties

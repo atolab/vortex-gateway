@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.adlinktech.gateway</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Vortex Gateway</name>
+    <description>Vortex Gateway parent POM</description>
+    <url>https://github.com/atolab/gateway</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/atolab/gateway/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:git://github.com/atolab/gateway.git</connection>
+        <developerConnection>scm:git:ssh://github.com:atolab/gateway</developerConnection>
+        <url>https://github.com/atolab/gateway</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Julien Enoch</name>
+            <email>julien.enoch@adlinktech.com</email>
+            <organization>ADLINK Technology</organization>
+            <organizationUrl>https://www.adlinktech.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Olivier Hécart</name>
+            <email>olivier.hecart@adlinktech.com</email>
+            <organization>ADLINK Technology</organization>
+            <organizationUrl>https://www.adlinktech.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Jean Marline</name>
+            <email>jean.marline@adlinktech.com</email>
+            <organization>ADLINK Technology</organization>
+            <organizationUrl>https://www.adlinktech.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Ivan Paez</name>
+            <email>ivan.paez@adlinktech.com</email>
+            <organization>ADLINK Technology</organization>
+            <organizationUrl>https://www.adlinktech.com/</organizationUrl>
+        </developer>
+    </developers>
+
+    <repositories>
+        <!-- Repository for Restlet (used by camel-example-dds-rest) -->
+        <repository>
+            <id>noelios-restlet-repo</id>
+            <url>http://maven.restlet.org</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
+
+        <jdk.version>1.7</jdk.version>
+
+        <!-- Recommended versions of dependencies -->
+
+        <!-- Maven and plugins -->
+        <maven-core-version>3.3.9</maven-core-version>
+        <maven-compiler-plugin-version>3.5.1</maven-compiler-plugin-version>
+        <maven-resources-plugin-version>3.0.1</maven-resources-plugin-version>
+        <maven-surefire-plugin-version>2.20</maven-surefire-plugin-version>
+        <maven-license-plugin-version>1.10.b1</maven-license-plugin-version>
+        <maven-release-plugin-version>2.5.3</maven-release-plugin-version>
+        <maven-archetype-plugin-version>2.4</maven-archetype-plugin-version>
+        <maven-java-formatter-plugin-version>0.4</maven-java-formatter-plugin-version>
+
+        <!-- for camel-ospl -->
+        <opensplice-dds-version>6.7.0</opensplice-dds-version>
+        <camel-version>2.21.1</camel-version>
+        <javax-mail-version>1.5.0-b01</javax-mail-version>
+        <slf4j-version>1.7.21</slf4j-version>
+        <build-helper-maven-plugin-version>1.12</build-helper-maven-plugin-version>
+        <junit-version>4.12</junit-version>
+        <logback-version>1.1.7</logback-version>
+
+        <!-- for opensplice-idl-plugin -->
+        <maven-project-version>3.0-alpha-2</maven-project-version>
+        <maven-plugin-testing-version>3.3.0</maven-plugin-testing-version>
+
+        <!-- for Gateway examples -->
+        <maven-exec-plugin-version>1.5.0</maven-exec-plugin-version>
+        <groovy-version>1.8.9</groovy-version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- OpenSpliceDDS dependency -->
+            <dependency>
+                <groupId>org.opensplice</groupId>
+                <artifactId>dcpssaj</artifactId>
+                <scope>system</scope>
+                <version>${opensplice-dds-version}</version>
+                <!-- NOTE: leading '/' in following <systemPath> is a workaround 
+                    for a Maven strange issue: without this '/' compilation of an individual 
+                    example leads to an error message complaining that opensplice-idl-plugin's 
+                    POM is not valid since managed dependency org.opensplice.dcpssaj has a non-absolute 
+                    systemPath Drawback: this probably works only on Unix... -->
+                <systemPath>/${env.OSPL_HOME}/jar/dcpssaj.jar</systemPath>
+            </dependency>
+
+            <!-- Maven plugins (used by opensplice-idl-plugin) -->
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven-core-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-compat</artifactId>
+                <version>${maven-core-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-project</artifactId>
+                <version>${maven-project-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-artifact</artifactId>
+                <version>${maven-core-version}</version>
+            </dependency>
+
+            <!-- Import global Camel POM, thus all Camel's artifacts -->
+            <!-- are referenced with the same version number -->
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>apache-camel</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>${camel-version}</version>
+            </dependency>
+
+            <!-- Groovy -->
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${groovy-version}</version>
+            </dependency>
+
+            <!-- javax.mail -->
+            <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>mail</artifactId>
+                <version>${javax-mail-version}</version>
+            </dependency>
+
+            <!-- slf4j logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j-version}</version>
+            </dependency>
+
+            <!-- - - - - - - - - - - - - -->
+            <!-- Gateway internal tests -->
+            <!-- - - - - - - - - - - - - -->
+
+            <!-- JUnit -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit-version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Maven plugin tests -->
+            <dependency>
+                <groupId>org.apache.maven.plugin-testing</groupId>
+                <artifactId>maven-plugin-testing-harness</artifactId>
+                <version>${maven-plugin-testing-version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Camel tests -->
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-core</artifactId>
+                <version>${camel-version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- logback (slf4j compatible backend) -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback-version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback-version}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+
+                <!-- Configure Maven to target the Java version specified 
+                    by ${jdk.version} -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin-version}</version>
+                    <configuration>
+                        <source>${jdk.version}</source>
+                        <target>${jdk.version}</target>
+                    </configuration>
+                </plugin>
+
+                <!-- Maven resources plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin-version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin-version}</version>
+                </plugin>
+
+                <!-- Maven exec plugin (for examples execution) -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${maven-exec-plugin-version}</version>
+                </plugin>
+
+                <!-- Maven Build Helper plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin-version}</version>
+                </plugin>
+
+                <!-- Java Code Formatter -->
+                <plugin>
+                    <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                    <artifactId>maven-java-formatter-plugin</artifactId>
+                    <version>${maven-java-formatter-plugin-version}</version>
+                    <configuration>
+                        <configFile>${basedir}/../src/etc/AdlinktechVortexJavaFormatter.xml</configFile>
+                        <lineEnding>LF</lineEnding>
+                    </configuration>
+                </plugin>
+
+                <!-- For Archetypes -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-archetype-plugin</artifactId>
+                    <version>${maven-archetype-plugin-version}</version>
+                </plugin>
+
+                <!-- This plugin's configuration is used to store Eclipse 
+                    m2e settings only. -->
+                <!-- It has no influence on the Maven build itself. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.adlinktech.gateway</groupId>
+                                        <artifactId>opensplice-idl-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>idl-compile</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <!-- For license header checking -->
+            <!-- Note: to add/update headers uncomment the "format" goals below -->
+            <!-- and run 'mvn -N validate verify' (then comment again) -->
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>${maven-license-plugin-version}</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <header>src/etc/header.txt</header>
+                    <strictCheck>true</strictCheck>
+                    <aggregate>true</aggregate>
+                    <excludes>
+                        <exclude>**/.git*</exclude>
+                        <exclude>**/*.md</exclude>
+                        <exclude>**/*.log</exclude>
+                        <exclude>LICENSE.txt</exclude>
+                        <!-- exclude ShapeType.idl as shared by other projects -->
+                        <exclude>**/src/main/idl/ShapeType.idl</exclude>
+                        <!-- exclude copied raphael.js JavaScript library 
+                            in some examples -->
+                        <exclude>examples/**/raphael.js</exclude>
+                        <!-- exclude archetype-resources files -->
+                        <exclude>gateway-archetype-camel-ospl/**/archetype-resources/**</exclude>
+                    </excludes>
+                    <mapping>
+                        <idl>SLASHSTAR_STYLE</idl>
+                        <adoc>DOUBLESLASH_STYLE</adoc>
+                    </mapping>
+                    <properties>
+                        <year>${copyrightYear}</year>
+                    </properties>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-headers</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <!-- <goal>format</goal> -->
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- additional execution just for POM files (excluded 
+                        by default) -->
+                    <execution>
+                        <id>check-headers-pom-files</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <!-- <goal>format</goal> -->
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <useDefaultExcludes>false</useDefaultExcludes>
+                            <includes>
+                                <include>./pom.xml</include>
+                                <include>**/pom.xml</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/target/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- For release preparation -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin-version}</version>
+                <configuration>
+                    <tagNameFormat>V@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <preparationGoals>clean install</preparationGoals>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+    </reporting>
+
+    <modules>
+        <module>opensplice-idl-plugin</module>
+        <module>camel-ospl</module>
+        <module>gateway-archetype-camel-ospl</module>
+        <module>examples</module>
+        <module>tests</module>
+    </modules>
+
+</project>

@@ -1,0 +1,17 @@
+/*
+ * This is an example of IDL file with DDS type specification.
+ * You should add your own IDL file in this directory, 
+ * or update this file with your own DDS types specifications.
+ */
+
+module your_module {
+
+    // A simple DDS type with 'id' member as key field  
+    struct YourType {
+        short id;
+        string data;
+    };
+    #pragma keylist YourType id
+            
+};
+ 

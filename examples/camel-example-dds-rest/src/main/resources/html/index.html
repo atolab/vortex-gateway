@@ -1,0 +1,120 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>iShapes client using REST</title>
+        <script src="raphael.js"></script>
+        <style media="screen">
+            body {
+                margin: 0;
+                padding: 0;
+                text-align: center;
+            }
+            h1 {
+                font-weight: 400;
+                height: 5%;
+            }
+            #canvas {
+                height: 360px;
+                margin: 0 auto;
+                text-align: center;
+                width: 500px;
+            }
+            #run {
+                font-size: 2em;
+            }
+            #loop {
+                font-size: 2em;
+            }
+        </style>
+        <script>
+            window.onload = function () {
+            
+                // to draw a Circle (shape must be a ShapeType object)
+                Raphael.fn.drawCircle = function(shape) {
+                    var radius = shape.shapesize/2;
+                    return this.circle(shape.x+radius, shape.y+radius, radius)
+                               .attr({fill: Raphael.getRGB(shape.color)});
+                };
+            
+                // to draw a Square (shape must be a ShapeType object)
+                Raphael.fn.drawSquare = function(shape) {
+                    return this.rect(shape.x, shape.y, shape.shapesize, shape.shapesize)
+                               .attr({fill: Raphael.getRGB(shape.color)});
+                };
+            
+                // to draw a Triangle (shape must be a ShapeType object)
+                Raphael.fn.drawTriangle = function(shape) {
+                    return this.path(
+                                Raphael.format("M{0},{1}L{2},{3}L{4},{5}",
+                                               shape.x+shape.shapesize/2, shape.y,
+                                               shape.x+shape.shapesize, shape.y+shape.shapesize,
+                                               shape.x, shape.y+shape.shapesize)
+                            )
+                           .attr({fill: Raphael.getRGB(shape.color)});
+                };
+
+                // to get a Shape via a HTTP GET request to the REST endpoint
+                function getShape(shapename) {
+                    var req = new XMLHttpRequest(), 
+                        url = "http://localhost:4444/rest/"+shapename;
+                    if(!req) {
+                        alert("Failed to create the XMLHttpRequest");
+                        return;
+                    }
+                    req.open("GET", url, false);
+                    req.send(null);
+                    if(req.readyState == 4) {
+                        var shape = eval("("+req.responseText+")");
+                        return shape['ShapeType'];
+                    }
+                }
+            
+                // to refresh all Shapes
+                Raphael.fn.refreshShapes = function() {
+                    this.clear();
+                    this.rect(0, 0, 500, 360).attr({fill: "#fff", stroke: "black", "stroke-width": 3});
+                    // get circle and draw it
+                    this.drawCircle(getShape("circle"));
+                    // get square and draw it
+                    this.drawSquare(getShape("square"));
+                    // get triangle and draw it
+                    this.drawTriangle(getShape("triangle"));
+                };
+            
+            
+                var paper = Raphael("canvas", 500, 360),
+                    btnRefresh = document.getElementById("refresh");
+
+                (btnRefresh.onclick = function () {
+                    paper.refreshShapes();
+                })();
+            };
+        </script>
+    </head>
+    <body>
+        <h1>iShapes REST client</h1>
+        <div id="canvas"></div>
+        <div><button id="refresh"  type="button">Refresh</button></div>
+    </body>
+</html>

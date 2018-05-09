@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${version}</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- property for Gateway version number -->
+        <gateway-version>${project-version}</gateway-version>
+    </properties>
+
+    <!-- Optional Dependencies (to specify default versions for possible dependencies) -->
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Import Gateway's dependencyManagement.       -->
+            <!-- Thus all dependencies used by Gateway are    -->
+            <!-- referenced with appropriate version numbers. -->
+            <!-- (including all Apache Camel artifacts)       -->
+            <dependency>
+                <groupId>com.adlinktech.gateway</groupId>
+                <artifactId>parent-pom</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>${gateway-version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+
+    <!-- Dependencies of your project -->
+    <dependencies>
+
+        <!-- Gateway's Camel OpensSpliceDDS endpoint -->
+        <dependency>
+            <groupId>com.adlinktech.gateway</groupId>
+            <artifactId>camel-ospl</artifactId>
+            <version>${gateway-version}</version>
+        </dependency>
+
+        <!-- OpensSpliceDDS (requires explicit dependency since it's system scope) -->
+        <dependency>
+            <groupId>org.opensplice</groupId>
+            <artifactId>dcpssaj</artifactId>
+        </dependency>
+
+        <!-- SLF4J simple console logger (to get logs from Gateway on standard output)-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+
+
+        <!-- Add here the dependencies you need for your project -->
+        <!-- For example:                                        -->
+<!--    <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-restlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-groovy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring</artifactId>
+        </dependency>
+-->
+
+    </dependencies>
+
+    <!-- Addons -->
+    <build>
+        <!-- Maven Plugins -->
+        <plugins>
+            <!-- OpenSplice IDL compilation plugin -->
+            <plugin>
+                <groupId>com.adlinktech.gateway</groupId>
+                <artifactId>opensplice-idl-plugin</artifactId>
+                <version>${gateway-version}</version>
+                <executions>
+                    <execution>
+                        <!-- call 'idl-compile' goal during 'generate-sources' phase -->
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>idl-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Maven exec plugin: to easily run your project with following command: -->
+            <!--      mvn exec:java                                                    -->
+            <!-- Note that classpathScope option has to be set to "compile" in order   -->
+            <!-- to have dcpssaj.jar system dependency added in classpath at runtime   -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <executable>java</executable>
+                    <classpathScope>compile</classpathScope>
+                    <mainClass>${package}.GatewayRoutesDefinition</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+
+
+        <pluginManagement>
+            <plugins>
+
+                <!-- For Eclipse's Maven plugin "m2e", we have to tell him to     -->
+                <!-- execute opensplice-idl-plugin as part of Eclipse workspace   -->
+                <!-- full or incremental build.                                   -->
+                <!-- See http://wiki.eclipse.org/M2E_plugin_execution_not_covered -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.adlinktech.gateway</groupId>
+                                        <artifactId>opensplice-idl-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>idl-compile</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+</project>
