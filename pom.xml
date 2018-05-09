@@ -30,7 +30,7 @@
 
     <name>Vortex Gateway</name>
     <description>Vortex Gateway parent POM</description>
-    <url>https://github.com/atolab/gateway</url>
+    <url>https://github.com/atolab/vortex-gateway</url>
 
     <licenses>
         <license>
@@ -41,13 +41,13 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/atolab/gateway/issues</url>
+        <url>https://github.com/atolab/vortex-gateway/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/atolab/gateway.git</connection>
-        <developerConnection>scm:git:ssh://github.com:atolab/gateway</developerConnection>
-        <url>https://github.com/atolab/gateway</url>
+        <connection>scm:git:git://github.com/atolab/vortex-gateway.git</connection>
+        <developerConnection>scm:git:ssh://github.com:atolab/vortex-gateway</developerConnection>
+        <url>https://github.com/atolab/vortex-gateway</url>
         <tag>HEAD</tag>
     </scm>
 
