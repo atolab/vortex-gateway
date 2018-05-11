@@ -109,6 +109,7 @@
         <maven-archetype-plugin-version>2.4</maven-archetype-plugin-version>
         <maven-java-formatter-plugin-version>0.4</maven-java-formatter-plugin-version>
         <maven-gpg-plugin-version>1.6</maven-gpg-plugin-version>
+        <nexus-staging-maven-plugin-version>1.6.8</nexus-staging-maven-plugin-version>
 
         <!-- for camel-ospl -->
         <opensplice-dds-version>6.7.0</opensplice-dds-version>
@@ -448,30 +449,60 @@
                 <version>${maven-release-plugin-version}</version>
                 <configuration>
                     <tagNameFormat>V@{project.version}</tagNameFormat>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
                     <preparationGoals>clean install</preparationGoals>
                 </configuration>
             </plugin>
 
-            <!-- PGP signature -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${maven-gpg-plugin-version}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
-
     </build>
+
+    <profiles>
+        <!-- profile for releases and deployment to Maven Central via Sonatype OSSRH -->
+        <profile>
+            <id>release</id>
+
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
+
+            <build>
+                <plugins>
+                    <!-- PGP signature -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin-version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Deployment to Maven Central via Sonatype OSSRH -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${nexus-staging-maven-plugin-version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <skipNexusStagingDeployMojo>false</skipNexusStagingDeployMojo>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <reporting>
         <excludeDefaults>true</excludeDefaults>
@@ -480,9 +511,13 @@
     <modules>
         <module>opensplice-idl-plugin</module>
         <module>camel-ospl</module>
-        <module>gateway-archetype-camel-ospl</module>
         <module>examples</module>
         <module>tests</module>
+        <module>gateway-archetype-camel-ospl</module>
+        <!-- NOTE: we need to keep gateway-archetype-camel-ospl as last module !     -->
+        <!-- This is a workaround to https://issues.sonatype.org/browse/NEXUS-9138 : -->
+        <!-- examples and tests modules have skipNexusStagingDeployMojo=false while  -->
+        <!-- gateway-archetype-camel-ospl has skipNexusStagingDeployMojo=true        -->
     </modules>
 
 </project>

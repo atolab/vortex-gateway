@@ -60,7 +60,8 @@ Otherwise, just add the following dependencies to your Maven POM file:
       <dependency>
          <groupId>org.opensplice</groupId>
          <artifactId>dcpssaj</artifactId>
-         <version>$[opensplice-version}</version>
+         <version>${opensplice-version}</version>
+         <scope>system</scope>
          <!-- NOTE: leading '/' in following <systemPath> is a workaround
               for a Maven strange issue: without this '/' compilation of an individual
               example leads to an error message complaining that opensplice-idl-plugin's

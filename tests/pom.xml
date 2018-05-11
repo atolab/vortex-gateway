@@ -27,12 +27,10 @@
         <groupId>com.adlinktech.gateway</groupId>
         <artifactId>parent-pom</artifactId>
         <version>3.0.0-SNAPSHOT</version>
-        <relativePath>../parent-pom</relativePath>
     </parent>
 
     <groupId>com.adlinktech.gateway.tests</groupId>
     <artifactId>tests-pom</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Gateway tests (parent pom)</name>
@@ -43,17 +41,6 @@
     </modules>
 
     <build>
-        <plugins>
-            <!-- Disable deployement of all tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-
         <pluginManagement>
             <plugins>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
@@ -87,5 +74,25 @@
         </pluginManagement>
 
     </build>
+
+    <profiles>
+        <!-- Plugins activated only for the releases-->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Disable deployment to Maven Central of all tests -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

@@ -29,7 +29,7 @@
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.adlinktech.gateway</groupId>
+    <groupId>com.adlinktech.gateway.examples</groupId>
     <artifactId>examples-pom</artifactId>
     <packaging>pom</packaging>
 
@@ -46,20 +46,8 @@
     </modules>
 
     <build>
-        <plugins>
-            <!-- Disable deployement of all examples -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-
         <pluginManagement>
             <plugins>
-
                 <!-- Maven exec plugin: specify "classpathScope=compile" for all examples
                      (this forces dcpssaj.jar system dependency to be used in classpath) -->
                 <plugin>
@@ -70,10 +58,28 @@
                         <classpathScope>compile</classpathScope>
                     </configuration>
                 </plugin>
-
             </plugins>
         </pluginManagement>
-
     </build>
+
+    <profiles>
+        <!-- Plugins activated only for the releases-->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Disable deployment to Maven Central of all tests -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
