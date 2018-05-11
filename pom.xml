@@ -19,13 +19,12 @@
     under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.adlinktech.gateway</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0rc1</version>
     <packaging>pom</packaging>
 
     <name>Vortex Gateway</name>
@@ -48,7 +47,7 @@
         <connection>scm:git:git://github.com/atolab/vortex-gateway.git</connection>
         <developerConnection>scm:git:git@github.com:atolab/vortex-gateway.git</developerConnection>
         <url>https://github.com/atolab/vortex-gateway</url>
-        <tag>HEAD</tag>
+        <tag>V3.0.0rc1</tag>
     </scm>
 
     <developers>
