@@ -1,6 +1,7 @@
 
 # Vortex Gateway
 
+ [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.adlinktech.gateway/camel-ospl/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.adlinktech.gateway/camel-ospl)
  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Introduction
@@ -25,7 +26,7 @@
 
 ### Apache Maven
 
- Vortex Gateway is available on Maven Central repo:
+ Vortex Gateway is available on [Maven Central repository](http://www.maven.org/#search%7Cga%7C1%7Cg%3A%22com.adlinktech.gateway%22)
 
  The examples we provide here are using [Apache Maven](http://maven.apache.org/).
  Please be sure to install it before compiling and running the examples.
@@ -35,17 +36,17 @@
 
 ### DDS Camel Component usage
 
-The complete documentation of the camel-ospl component (including all the endpoint options) can is here:
-[camel-ospl/README.adoc](camel-ospl/README.adoc)
+ The complete documentation of the camel-ospl component (including all the endpoint options) can is here:
+ [camel-ospl/README.adoc](camel-ospl/README.adoc)
 
 ### Maven project configuration
 
-You can use the provided Maven archetype (*gateway-archetype-camel-ospl*) to quickly generate a Maven project
-configured with Vortex Gateway usage and with a Java class to be completed with your Camel routes definition.
+ You can use the provided Maven archetype (*gateway-archetype-camel-ospl*) to quickly generate a Maven project
+ configured with Vortex Gateway usage and with a Java class to be completed with your Camel routes definition.
 
-It's usage is decribed here: [gateway-archetype-camel-ospl/README.adoc](gateway-archetype-camel-ospl/README.adoc)
+ It's usage is decribed here: [gateway-archetype-camel-ospl/README.adoc](gateway-archetype-camel-ospl/README.adoc)
 
-Otherwise, just add the following dependencies to your Maven POM file:
+ Otherwise, just add the following dependencies to your Maven POM file:
 
 ```XML
    <dependencies>
@@ -72,11 +73,11 @@ Otherwise, just add the following dependencies to your Maven POM file:
    </dependencies>
 ```
 
-Note with such dependencies, OpenSplice's *dcpssaj.jar* doesn't require to be installed in your Maven repository.
-You just need to ensure that the OpenSplice's *release.com* is sourced in your environment.
-Using the *system* scope in the dependency, Maven will use the the jar at *$OSPL_HOME/jar/dcpssaj.jar*.
+ Note with such dependencies, OpenSplice's *dcpssaj.jar* doesn't require to be installed in your Maven repository.
+ You just need to ensure that the OpenSplice's *release.com* is sourced in your environment.
+ Using the *system* scope in the dependency, Maven will use the the jar at *$OSPL_HOME/jar/dcpssaj.jar*.
 
-And for the compilation of you IDL files, you need to configure the *opensplice-idl-plugin* provided with Vortex Gateway:
+ And for the compilation of you IDL files, you need to configure the *opensplice-idl-plugin* provided with Vortex Gateway:
 
 ```XML
    <build>
@@ -99,11 +100,11 @@ And for the compilation of you IDL files, you need to configure the *opensplice-
    </build>
 ```
 
-More details on *opensplice-idl-plugin* in its documentation: [opensplice-idl-plugin/README.adoc](opensplice-idl-plugin/README.adoc)
+ More details on *opensplice-idl-plugin* in its documentation: [opensplice-idl-plugin/README.adoc](opensplice-idl-plugin/README.adoc)
 
 ## Examples
 
-Some examples of Vortex Gateway usage can be found here: [Examples](examples)
+ Some examples of Vortex Gateway usage can be found here: [Examples](examples)
 
 
-### [Changelog](CHANGELOG.md)
+## [Changelog](CHANGELOG.md)

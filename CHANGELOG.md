@@ -1,9 +1,9 @@
 # Changelog
 
-## [UNRELEASED](https://github.com/atolab/cafe/tree/master)
+## [UNRELEASED](https://github.com/atolab/vortex-gateway/tree/master)
 
 
-## [3.0.0](https://github.com/atolab/cafe/tree/V3.0.0)
+## [3.0.0](https://github.com/atolab/vortex-gateway/tree/V3.0.0) - 2015-05-11
  This is the first release of Vortex Gateway as open-source under Apache Licence v2.0.
 
  This implied the following changes wrt. the previous commercial version:
