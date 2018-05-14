@@ -2,12 +2,14 @@
 
 ## [UNRELEASED](https://github.com/atolab/vortex-gateway/tree/master)
 
+## [3.0.1](https://github.com/atolab/vortex-gateway/tree/V3.0.0) - 2018-05-14
+
 ### Fixed
  - the code changes made between 2.3.1 and 2.3.2 (i.e. BB-326 and BB-327) were missing in 3.0.0.
    They now have been added back.
   
 
-## [3.0.0](https://github.com/atolab/vortex-gateway/tree/V3.0.0) - 2015-05-11
+## [3.0.0](https://github.com/atolab/vortex-gateway/tree/V3.0.0) - 2018-05-11
  This is the first release of Vortex Gateway as open-source under Apache Licence v2.0.
 
  This implied the following changes wrt. the previous commercial version:
