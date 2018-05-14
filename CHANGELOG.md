@@ -2,6 +2,10 @@
 
 ## [UNRELEASED](https://github.com/atolab/vortex-gateway/tree/master)
 
+### Fixed
+ - the code changes made between 2.3.1 and 2.3.2 (i.e. BB-326 and BB-327) were missing in 3.0.0.
+   They now have been added back.
+  
 
 ## [3.0.0](https://github.com/atolab/vortex-gateway/tree/V3.0.0) - 2015-05-11
  This is the first release of Vortex Gateway as open-source under Apache Licence v2.0.
@@ -44,8 +48,8 @@ ________________________________________________________________________________
  Vortex V2.4
  - **BB-298** update
 
-   Vortex Gateway is now based on Vortex Café 2.3.1.
-   The camel-ddsi component benefits some of its fixes and improvements (see Café's changes).
+   Vortex Gateway is now based on Vortex Cafï¿½ 2.3.1.
+   The camel-ddsi component benefits some of its fixes and improvements (see Cafï¿½'s changes).
 
  - **BB-299** fix
 
@@ -56,12 +60,12 @@ ________________________________________________________________________________
  Vortex V2.3.0
  - **BB-287** update
 
-   Vortex Gateway is now based on Vortex Café 2.3.0.
-   The camel-ddsi component benefits some of its fixes and improvements (see Café's changes).
+   Vortex Gateway is now based on Vortex Cafï¿½ 2.3.0.
+   The camel-ddsi component benefits some of its fixes and improvements (see Cafï¿½'s changes).
 
  - **BB-288** update
 
-   Vortex Café now supports Java 7 and 8. It's tested with both Oracle Java 8 and OpenJDK 8.
+   Vortex Cafï¿½ now supports Java 7 and 8. It's tested with both Oracle Java 8 and OpenJDK 8.
    Note that Java 6 is no longer supported.
 
  - **BB-289** update
@@ -73,8 +77,8 @@ ________________________________________________________________________________
  Vortex V2.2.0
  - **BB-276** update
 
-   Vortex Gateway is now based on Vortex Café 2.2.2.
-   The camel-ddsi component benefits some of its fixes and improvements (see Café's changes).
+   Vortex Gateway is now based on Vortex Cafï¿½ 2.2.2.
+   The camel-ddsi component benefits some of its fixes and improvements (see Cafï¿½'s changes).
 
  - **BB-277** fix
 
@@ -84,13 +88,13 @@ ________________________________________________________________________________
  Vortex V2.1.0
  - **BB-251** update
 
-   Update all the "shapes-*" examples to work with Vortex Café 2.2.1 iShapes example,
+   Update all the "shapes-*" examples to work with Vortex Cafï¿½ 2.2.1 iShapes example,
    but also with OpenSplice and Lite iShapes demos.
 
  - **BB-268** update
 
-   Vortex Gateway is now based on Vortex Café 2.2.1.
-   The camel-ddsi component benefits some of its fixes and improvements (see Café's changes).
+   Vortex Gateway is now based on Vortex Cafï¿½ 2.2.1.
+   The camel-ddsi component benefits some of its fixes and improvements (see Cafï¿½'s changes).
 
  - **BB-271** fix
 
@@ -100,8 +104,8 @@ ________________________________________________________________________________
  Vortex V2.0.0
  - **BB-248** update
 
-   Vortex Gateway is now based on Vortex Café 2.2.0.
-   The camel-ddsi component benefits some of its fixes and improvements (see Café's changes).
+   Vortex Gateway is now based on Vortex Cafï¿½ 2.2.0.
+   The camel-ddsi component benefits some of its fixes and improvements (see Cafï¿½'s changes).
 
 ### 2.1.2 - 2015-07-08
  Maintenance release
@@ -135,8 +139,8 @@ ________________________________________________________________________________
 
  - **BB-229** update
 
-   Vortex Gateway is now based on Vortex Café 2.1.1.
-   The camel-ddsi component benefits some of its fixes and improvements (see Café's changes).
+   Vortex Gateway is now based on Vortex Cafï¿½ 2.1.1.
+   The camel-ddsi component benefits some of its fixes and improvements (see Cafï¿½'s changes).
 
  - **OSPL-5470** fix
 
@@ -162,8 +166,8 @@ ________________________________________________________________________________
 
  - **BB-211** update
 
-   Vortex Web is now based on Vortex Café 2.1.0.
-   The camel-ddsi component benefits some of its fixes and improvements (see Café's changes).
+   Vortex Web is now based on Vortex Cafï¿½ 2.1.0.
+   The camel-ddsi component benefits some of its fixes and improvements (see Cafï¿½'s changes).
 
  - **BB-213** update
 
@@ -173,8 +177,8 @@ ________________________________________________________________________________
  Vortex V1.0.1
  - **BB-204** update
 
-   Vortex Gateway's camel-ddsi is now based on Vortex Café 2.0.1.
-   The camel-ddsi component benefits some of its fixes and improvements (see Café's changes).
+   Vortex Gateway's camel-ddsi is now based on Vortex Cafï¿½ 2.0.1.
+   The camel-ddsi component benefits some of its fixes and improvements (see Cafï¿½'s changes).
 
 ### 2.0.0 - 2014-07-11
  Vortex V1.0.0
@@ -191,7 +195,7 @@ ________________________________________________________________________________
 
  - **BB-158** update
 
-   The camel-ddsi component uses the same DDSI implementation than Vortex Café v2.0.0 .
+   The camel-ddsi component uses the same DDSI implementation than Vortex Cafï¿½ v2.0.0 .
 
  - **BB-160** update
 

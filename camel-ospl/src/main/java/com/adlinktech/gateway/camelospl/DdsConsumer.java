@@ -224,15 +224,21 @@ public class DdsConsumer
       LOG.debug("{} : doSuspend()", this);
 
       // trigger GuardCondition to gracefully stop the thread
-      guardCondition.set_trigger_value(true);
+      if (guardCondition != null)
+      {
+         guardCondition.set_trigger_value(true);
+      }
 
       // wait thread to terminate
-      readerThread.join(1000);
-
-      if (readerThread.isAlive())
+      if (readerThread != null)
       {
-         LOG.warn("{} : ReaderThread to suspend is still running. Interrupt it.", this);
-         readerThread.interrupt();
+         readerThread.join(1000);
+         if (readerThread.isAlive())
+         {
+            LOG.warn("{} : ReaderThread to suspend is still running. Interrupt it.", this);
+            readerThread.interrupt();
+         }
+         readerThread = null;
       }
       super.doSuspend();
    }
@@ -446,13 +452,16 @@ public class DdsConsumer
 
    private void deleteWaitSet() throws DdsException
    {
-      // detach conditions from WaitSet
-      DdsErrorHandler.checkStatus(
-            waitSet.detach_condition(guardCondition),
-            "WaitSet detach GuardCondition");
-      DdsErrorHandler.checkStatus(
-            waitSet.detach_condition(statusCondition),
-            "WaitSet detach StatusCondition");
+      if (waitSet != null)
+      {
+         // detach conditions from WaitSet
+         DdsErrorHandler.checkStatus(
+               waitSet.detach_condition(guardCondition),
+               "WaitSet detach GuardCondition");
+         DdsErrorHandler.checkStatus(
+               waitSet.detach_condition(statusCondition),
+               "WaitSet detach StatusCondition");
+      }
 
       statusCondition = null;
       guardCondition = null;
@@ -476,7 +485,8 @@ public class DdsConsumer
          }
          catch (DdsException e)
          {
-            LOG.error("{} : Error waiting on WaitSet: {}", this, e.toString());
+            LOG.warn("{} : Exception waiting on WaitSet: {}", this, e.toString());
+            getExceptionHandler().handleException(e);
          }
 
          for (int i = 0; i < triggeredConditions.value.length; i++)
@@ -583,8 +593,11 @@ public class DdsConsumer
       }
       catch (Exception e)
       {
-         LOG.info("{} : Reader" + (readMode ? ".read()" : ".take()") + " failed",
+         LOG.warn("{} : Reader" + (readMode ? ".read()" : ".take()") + " failed",
                endpoint, e);
+         getExceptionHandler().handleException(e);
+         // no need to go further since return_loan() operation will fail the same.
+         return;
       }
 
       try
@@ -600,7 +613,8 @@ public class DdsConsumer
       }
       catch (Exception e)
       {
-         LOG.info("{} : Reader return_loan failed", endpoint, e);
+         LOG.warn("{} : Reader return_loan failed", endpoint, e);
+         getExceptionHandler().handleException(e);
       }
    }
 

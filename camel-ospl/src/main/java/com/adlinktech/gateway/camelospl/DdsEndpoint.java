@@ -1642,13 +1642,17 @@ public class DdsEndpoint
    @Override
    public Consumer createConsumer(Processor processor) throws Exception
    {
-      return new DdsConsumer(this, processor);
+      DdsConsumer result = new DdsConsumer(this, processor);
+      configureConsumer(result);
+      return result;
    }
 
    @Override
    public PollingConsumer createPollingConsumer() throws Exception
    {
-      return new DdsPollingConsumer(this);
+      DdsPollingConsumer result = new DdsPollingConsumer(this);
+      configureConsumer(result);
+      return result;
    }
 
 

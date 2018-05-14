@@ -24,7 +24,6 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.FailedToCreateProducerException;
 import org.apache.camel.Message;
-import org.apache.camel.RuntimeExchangeException;
 import org.apache.camel.SuspendableService;
 import org.apache.camel.impl.DefaultProducer;
 import org.slf4j.Logger;
@@ -36,6 +35,7 @@ import DDS.HANDLE_NIL;
 import DDS.Publisher;
 import DDS.PublisherQos;
 import DDS.PublisherQosHolder;
+import DDS.RETCODE_BAD_PARAMETER;
 import DDS.Topic;
 import DDS.TopicQosHolder;
 
@@ -355,7 +355,7 @@ public class DdsProducer
       DdsErrorHandler.checkStatus(status, "Set DataWriter QoS");
    }
 
-   public void process(Exchange exchange)
+   public void process(Exchange exchange) throws Exception
    {
       // Get DDS data from IN message body
       Object data = exchange.getIn().getBody();
@@ -363,30 +363,23 @@ public class DdsProducer
       // Check if the data type is the expected one
       if ( !endpoint.getTopicType().isInstance(data))
       {
-         throw new RuntimeExchangeException(
-               "Body is not a " + endpoint.getTopicType() + " object", exchange);
+         throw new DdsException(
+               "Body is not a " + endpoint.getTopicType() + " object", RETCODE_BAD_PARAMETER.value);
       }
 
       // Synchronize on DataWriter, in case of dynamic QoS change
       synchronized (writerLock)
       {
-         try
-         {
-            boolean changeQoS = hasDynamicQos(exchange.getIn().getHeaders());
-            DataWriterQosHolder oldQoS = null;
-            if (changeQoS)
-               oldQoS = changeDataWriterQoS(exchange.getIn());
+         boolean changeQoS = hasDynamicQos(exchange.getIn().getHeaders());
+         DataWriterQosHolder oldQoS = null;
+         if (changeQoS)
+            oldQoS = changeDataWriterQoS(exchange.getIn());
 
-            // Publish to DDS
-            publishToDDS(data, exchange.getIn().getHeader("DDS_DISPOSE", DdsDisposeHeader.class));
+         // Publish to DDS
+         publishToDDS(data, exchange.getIn().getHeader("DDS_DISPOSE", DdsDisposeHeader.class));
 
-            if (changeQoS)
-               setDataWriterQoS(oldQoS.value);
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeExchangeException(e.getMessage(), exchange, e);
-         }
+         if (changeQoS)
+            setDataWriterQoS(oldQoS.value);
       }
    }
 
@@ -408,6 +401,7 @@ public class DdsProducer
     */
    protected void publishToDDS(Object data, DdsDisposeHeader dispose) throws Exception
    {
+      Object status = null;
       Object[] arrWriteMethodParams =
       {
             data, HANDLE_NIL.value
@@ -415,24 +409,32 @@ public class DdsProducer
       if (dispose == null)
       {
          // call write()
-         writeMethod.invoke(writer, arrWriteMethodParams);
+         status = writeMethod.invoke(writer, arrWriteMethodParams);
+         DdsErrorHandler.checkStatus( ((Integer) status).intValue(),
+               writer.getClass() + ".write()");
       }
       else
       {
          if (dispose == DdsDisposeHeader.WRITEDISPOSE)
          {
             // call writedispose()
-            writeDisposeMethod.invoke(writer, arrWriteMethodParams);
+            status = writeDisposeMethod.invoke(writer, arrWriteMethodParams);
+            DdsErrorHandler.checkStatus( ((Integer) status).intValue(),
+                  writer.getClass() + ".writedispose()");
          }
          else if (dispose == DdsDisposeHeader.DISPOSE)
          {
             // call dispose()
-            disposeMethod.invoke(writer, arrWriteMethodParams);
+            status = disposeMethod.invoke(writer, arrWriteMethodParams);
+            DdsErrorHandler.checkStatus( ((Integer) status).intValue(),
+                  writer.getClass() + ".dispose()");
          }
          else if (dispose == DdsDisposeHeader.UNREGISTER)
          {
             // call unregister_instance()
-            unregisterMethod.invoke(writer, arrWriteMethodParams);
+            status = unregisterMethod.invoke(writer, arrWriteMethodParams);
+            DdsErrorHandler.checkStatus( ((Integer) status).intValue(),
+                  writer.getClass() + ".unregister_instance()");
          }
       }
    }

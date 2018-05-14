@@ -253,6 +253,15 @@ An integer representing the transport priority.
 | writerDataLifecycleAutodispose            | Boolean  a|
 Corresponds to DDS WriterDataLifecycleQosPolicy.autodispose_unregistered_instances
 
+| consumer.exceptionHandler                 | String   a|
+The reference to an ExceptionHandler bean that will handle exceptions produced by
+the consumer. See <<error-handling,Error Handling>> for more details.
+
+| consumer.bridgeErrorHandler               | Boolean  a|
+Allows for bridging the consumer to the Camel routing Error Handler, which mean any
+exceptions occurred while reading on DDS will now be processed as a message and handled
+by the routing Error Handler. See <<error-handling,Error Handling>> for more details.
+
 |===================================================================================================
 
 
@@ -313,6 +322,118 @@ ctx.start();
 In this example the DDS endpoint subscribes to the '_ChatMessage_' topic
 in DDS Domain '_0_' using DDS partition '_ChatRoom_'.
 The topic Reliability QoS is set to '_RELIABLE_'.
+
+[[error-handling]]
+## Error Handling
+
+### Errors in Producer (i.e. on DDS DataWriter usage)
+
+If an error occurs in camel-ospl Producer when it writes on DDS, a com.prismtech.gateway.camelospl.DdsException
+is thrown internally and caught by the Camel routing engine. The engine store this exception in current Exchange's
+properties and continue with routing.
+
+You can handle such error in the usual Camel way, as described here:
+http://camel.apache.org/error-handling-in-camel.html[^]
+
+The com.prismtech.gateway.camelospl.DdsException class offers the following method to get more details on the error:
+
+* `public int getRetcode()` : to get the DDS "return code" that identify the reason of error.
+
+* `public String getMessage()` : to get the OpenSplice's error message.
+
+Example of Producer's error handling on a route:
+
+[source,java]
+----
+from("...")                            // from any endpoint
+   .onException(DdsException.class)     // catch error and process it
+      .process(new Processor()
+          {
+             @Override
+             public void process(Exchange exchange) throws Exception
+             {
+                // the caused by exception is stored in a property on the exchange
+                DdsException exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT,
+                      DdsException.class);
+               System.out.println("Error writing to DDS: (code="
+                  + ddsException.getRetcode() + ") "
+                  + ddsException.getMessage());
+             }
+          })
+      .end()
+  .to("dds:...")     // to a DDS endpoint
+----
+
+### Errors in Consumer (i.e. on DDS DataReader usage)
+
+As explained in http://camel.apache.org/why-does-my-file-consumer-not-pick-up-the-file-and-how-do-i-let-the-file-consumer-use-the-camel-error-handler.html[Apache Camel FAQ],
+the errors occurring in a Consumer before the Exchange is created
+are caught by an ErrorHandler which by default is the Camel's LoggingExceptionHandler.
+This handler will only log the exceptions and then ignore them.
+
+Similarly to the http://camel.apache.org/file2.html[Camel's File component], the camel-ospl component
+offers 2 options to handle errors that may occur in Consumer (i.e. on DDS DataReader usage):
+
+* *consumer.exceptionHandler* option allows to configure a custom ExceptionHandler.
++
+Example of usage:
++   
+[source,java]
+----
+// A custom handler.
+// Note that it must be registered as a bean in Registry to be referred in URI.
+private static class MyExceptionHandler
+   implements ExceptionHandler
+{
+   @Override
+   public void handleException(Throwable exception)
+   {
+      handleException(exception.getMessage(), exception);
+   }
+
+   @Override
+   public void handleException(String message, Throwable exception)
+   {
+      handleException(message, null, exception);
+   }
+
+   @Override
+   public void handleException(String message, Exchange exchange, Throwable exception)
+   {
+       // ... handle exception ...
+   }
+}
+   
+//  Route definition, referring the custom handler bean
+from("dds:ChatMessage:0/Chat.ChatMessage?consumer.exceptionHandler=#myExceptionHandler")
+   .to("...");
+----
+
+* *consumer.bridgeErrorHandler* option, when set to true, instructs Camel to handle
+  any error in Consumer and to create and route an Exchange containing the exception.
++
+Example of usage:
++   
+[source,java]
+----
+from("dds:ChatMessage:0/Chat.ChatMessage?consumer.bridgeErrorHandler=true")
+   .onException(DdsException.class)
+      .process(new Processor()
+      {
+         @Override
+         public void process(Exchange exchange) throws Exception
+         {
+            // the caused by exception is stored in a property on the exchange
+            DdsException exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT,
+                  DdsException.class);
+            // ... handle exception ...
+         }
+      })
+      .stop()
+  .end()
+  .to("...");
+----
+
 
 ## Dynamic DDS QoS changes
 
