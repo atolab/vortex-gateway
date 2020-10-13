@@ -116,7 +116,7 @@
         <javax-mail-version>1.5.0-b01</javax-mail-version>
         <slf4j-version>1.7.21</slf4j-version>
         <build-helper-maven-plugin-version>1.12</build-helper-maven-plugin-version>
-        <junit-version>4.12</junit-version>
+        <junit-version>4.13.1</junit-version>
         <logback-version>1.1.7</logback-version>
 
         <!-- for opensplice-idl-plugin -->
