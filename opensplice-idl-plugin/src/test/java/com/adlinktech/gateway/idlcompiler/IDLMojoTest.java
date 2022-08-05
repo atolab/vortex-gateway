@@ -86,6 +86,11 @@ public class IDLMojoTest
       String mode = (String) getVariableValueFromObject(mojo, "mode");
       assertTrue(mode.equals("-S"));
 
+      String[] renames = (String[]) getVariableValueFromObject(mojo, "renamePackages");
+      assertTrue(renames.length == 2);
+      assertTrue(renames[0].equals("package:my.package"));
+      assertTrue(renames[1].equals("from.package:to.package"));
+
       File idlDir = (File) getVariableValueFromObject(mojo, "idlDir");
       assertTrue(idlDir.getName().equals("project1"));
 

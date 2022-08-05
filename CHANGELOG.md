@@ -1,6 +1,7 @@
 # Changelog
 
 ## [UNRELEASED](https://github.com/atolab/vortex-gateway/tree/master)
+ - add `renamePackages` to `opensplice-idl-plugin` (uses idlpp's `-j` option)
 
 ## [3.0.1](https://github.com/atolab/vortex-gateway/tree/V3.0.0) - 2018-05-14
 

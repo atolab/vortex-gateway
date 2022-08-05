@@ -73,6 +73,10 @@
                         <macro>Hello</macro>
                         <macro>World</macro>
                     </macros>
+                    <renamePackages>
+                      <renamePackage>package:my.package</renamePackage>
+                      <renamePackage>from.package:to.package</renamePackage>
+                    </renamePackages>
                     <language>java</language>
                     <mode>-S</mode>
                 </configuration>

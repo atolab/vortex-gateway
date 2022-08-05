@@ -104,6 +104,15 @@ public class IDLMojo
    private String mode;
 
    /**
+    * rename packages. renames should be specified in the form "[old]:new". if "old" is specified,
+    * then the (partial) package name matching "old" is replaced with "new". otherwise, all packages
+    * prefixed with "new". applicable only for the Java programming language
+    * @ parameter
+    */
+   @Parameter
+   private String[] renamePackages;
+
+   /**
     * Process arguments
     */
    private List<String> arguments;
@@ -165,6 +174,15 @@ public class IDLMojo
          {
             arguments.add("-I");
             arguments.add(includeDirs[x].getAbsolutePath());
+         }
+      }
+
+      if (renamePackages != null && renamePackages.length > 0)
+      {
+         for (int x = 0; x < renamePackages.length; x++)
+         {
+            arguments.add("-j");
+            arguments.add(renamePackages[x]);
          }
       }
 
