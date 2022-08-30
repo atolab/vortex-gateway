@@ -33,37 +33,41 @@ source files to be compiled by Maven during the "compile" phase.
 
 In addition, the following optional parameters can be configured:
 
-[options="header",cols="15,15,70"]
+[options="header",cols="18,15,70"]
 |===============================================================================
-|  Name       | Type     | Description
+|  Name          | Type     | Description
 
-| outDir      | File     | The directory to output the generated sources to.
+| outDir         | File     | The directory to output the generated sources to.
 
-                           Default value is:
-                           *${project.build.directory}/generated-sources/idl*
+                              Default value is:
+                              *${project.build.directory}/generated-sources/idl*
 
-| includeDirs | File[]   | Additional include directories containing additional
-                           *.idl files required for compilation.
+| includeDirs    | File[]   | Additional include directories containing
+                              additional *.idl files required for compilation.
 
-| idlDir      | File     | The source directory containing +++*+++.idl files.
+| idlDir         | File     | The source directory containing +++*+++.idl files.
 
-                           Default value is:
-                           *${basedir}/src/main/idl*
+                              Default value is:
+                              *${basedir}/src/main/idl*
 
-| macros      | String[] | Preprocessing macros definitions
-                           (used with `-D` options)
+| macros         | String[] | Preprocessing macros definitions
+                              (used with `-D` options)
 
-| idlc        | String   | The compiler executable.
+| idlc           | String   | The compiler executable.
 
-                           Default value is: *idlc*
+                              Default value is: *idlc*
 
-| language    | String   | The language of generated code.
-                           Should be one of `java`, `c`, `c++` or `cs`.
+| language       | String   | The language of generated code.
+                              Should be one of `java`, `c`, `c++` or `cs`.
 
-                           Default value is: *java*
+                              Default value is: *java*
 
-| mode        | String   | Standalone or CORBA mode.
-                           Should be either `-S` or `-C`.
+| mode           | String   | Standalone or CORBA mode.
+                              Should be either `-S` or `-C`.
 
-                           Default value is: *-S*
+                              Default value is: *-S*
+
+| renamePackages | String[] | Rename or prefix packages using the idlpp's `-j`
+                              option. Applies only when generating Java code.
+
 |===============================================================================
